@@ -1,4 +1,5 @@
 {
+    "appliance_id": "754f4df8-934f-4a55-8d32-5bfd922785d9",
     "name": "FortiRecorder",
     "category": "guest",
     "description": "Surveillance systems can be complicated, expensive, and unreliable. But FortiCamera and FortiRecorder simplify IP video surveillance and there are no license fees. With FortiCams, you can see everything: doors, POS terminals, public areas--whatever you need to keep an eye on. FortiRecorder captures the images for easy monitoring, storage, and retrieval. Just plug in your cameras, connect the FortiRecorder, open a web browser or client application, and you're ready to go. It's easy to navigate and configure with event timelines and profile-driven configuration.",
@@ -12,8 +13,8 @@
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
     "usage": "Use HTTPS when connecting to the WebUI.\nDefault username is admin, no password is set.",
-    "port_name_format": "Port{port1}",
     "symbol": "fortinet.svg",
+    "port_name_format": "Port{port1}",
     "qemu": {
         "adapter_type": "virtio-net-pci",
         "adapters": 10,
@@ -46,7 +47,7 @@
             "md5sum": "3411a599e822f2ac6be560a26405821a",
             "filesize": 197120,
             "download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/",
-            "direct_download_url": "http://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
+            "direct_download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
         }
     ],
     "versions": [

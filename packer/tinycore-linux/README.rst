@@ -5,6 +5,17 @@ For building a MicroCore / TinyCore appliance.
 
 http://tinycorelinux.net/
 
+
+Packer Version Dependency
+*************************
+
+Packer versions 1.6.0 or later do not accept templates
+that use the ``iso_checksum_type`` attribute.
+To use these newer versions, you must delete the line
+containing ``iso_checksum_type`` from core-linux.json,
+core64-linux.json and tinycore-linux.json.
+
+
 Clean core Linux installation
 *****************************
 
@@ -76,18 +87,3 @@ A build of Tiny Core with Firefox preinstalled.
 
     packer build -var-file=tinycore-linux-firefox.json tinycore-linux.json
 
-
-Ostinato
-'''''''''
-
-A build of Tiny Core with Ostinato GUI + drone preinstalled.
-
-.. code:: bash
-
-    packer build -var-file=ostinato.json tinycore-linux.json
-
-A drone-only VM without GUI can be build with:
-
-.. code:: bash
-
-    packer build -var-file=ostinato-drone.json core-linux.json

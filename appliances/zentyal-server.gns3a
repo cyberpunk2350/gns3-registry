@@ -1,4 +1,5 @@
 {
+    "appliance_id": "4f5edc3d-f890-4d22-a17d-608c0dba4002",
     "name": "Zentyal Server",
     "category": "guest",
     "description": "The on-premise Mail and Directory server. Native compatibility with Microsoft Active Directory. You can control your IT infrastructure from a single point of user management, regardless of the different offices and locations your business has. True Microsoft Outlook compatibility. Your users can continue using their favorite email clients, without any service interruptions and without having to install any plug-in or connector.",
@@ -24,6 +25,14 @@
         "kvm": "require"
     },
     "images": [
+        {
+            "filename": "zentyal-6.1-development-amd64.iso",
+            "version": "6.1",
+            "md5sum": "83ff98b344f4fbb354c32ae42ff57c7b",
+            "filesize": 1003487232,
+            "download_url": "http://download.zentyal.com/",
+            "direct_download_url": "http://download.zentyal.com/zentyal-6.1-development-amd64.iso"
+        },
         {
             "filename": "zentyal-6.0-development-amd64.iso",
             "version": "6.0",
@@ -86,10 +95,17 @@
             "md5sum": "1e6409a4523ada212dea2ebc50e50a65",
             "filesize": 198656,
             "download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/",
-            "direct_download_url": "http://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty100G.qcow2/download"
+            "direct_download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty100G.qcow2/download"
         }
     ],
     "versions": [
+        {
+            "name": "6.1",
+            "images": {
+                "hda_disk_image": "empty100G.qcow2",
+                "cdrom_image": "zentyal-6.1-development-amd64.iso"
+            }
+        },
         {
             "name": "6.0",
             "images": {

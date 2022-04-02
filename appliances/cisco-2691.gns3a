@@ -1,4 +1,5 @@
 {
+    "appliance_id": "ed0f079e-a506-4cb4-b46c-714a80bbe2d3",
     "name": "Cisco 2691",
     "category": "router",
     "description": "Cisco 2691 Router",
@@ -11,7 +12,7 @@
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
     "dynamips": {
-        "platform": "c3600",
+        "platform": "c2691",
         "ram": 192,
         "nvram": 256,
         "startup_config": "ios_base_startup-config.txt",

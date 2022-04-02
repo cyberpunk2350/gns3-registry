@@ -1,4 +1,5 @@
 {
+    "appliance_id": "286b3ba3-6646-41d2-b67c-dd6de9da8a5a",
     "name": "IPFire",
     "category": "firewall",
     "description": "IPFire was designed with both modularity and a high-level of flexibility in mind. You can easily deploy many variations of it, such as a firewall, a proxy server or a VPN gateway. The modular design ensures that it runs exactly what you've configured it for and nothing more. Everything is simple to manage and update through the package manager, making maintenance a breeze.",
@@ -25,12 +26,21 @@
     },
     "images": [
         {
+            "filename": "ipfire-2.23.2gb-ext4.x86_64-full-core136.img",
+            "version": "2.23.136",
+            "md5sum": "56d4cdce08417a9ddb465e445bd4ef63",
+            "filesize": 1540358144,
+            "download_url": "http://www.ipfire.org/download",
+            "direct_download_url": "https://downloads.ipfire.org/releases/ipfire-2.x/2.23-core136/ipfire-2.23.2gb-ext4.x86_64-full-core136.img.xz",
+            "compression": "xz"
+        },
+        {
             "filename": "ipfire-2.23.2gb-ext4.x86_64-full-core131.img",
-            "version": "2.23",
+            "version": "2.23.131",
             "md5sum": "604c06e20c36985ff00802da4509340c",
             "filesize": 1541160960,
             "download_url": "http://www.ipfire.org/download",
-            "direct_download_url": "https://muug.ca/mirror/ipfire/releases/ipfire-2.x/2.23-core131/ipfire-2.23.2gb-ext4.x86_64-full-core131.img.xz",
+            "direct_download_url": "https://downloads.ipfire.org/releases/ipfire-2.x/2.23-core131/ipfire-2.23.2gb-ext4.x86_64-full-core131.img.xz",
             "compression": "xz"
         },
         {
@@ -108,7 +118,13 @@
     ],
     "versions": [
         {
-            "name": "2.23",
+            "name": "2.23.136",
+            "images": {
+                "hda_disk_image": "ipfire-2.23.2gb-ext4.x86_64-full-core136.img"
+            }
+        },
+        {
+            "name": "2.23.131",
             "images": {
                 "hda_disk_image": "ipfire-2.23.2gb-ext4.x86_64-full-core131.img"
             }

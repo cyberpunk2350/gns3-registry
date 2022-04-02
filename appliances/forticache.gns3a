@@ -1,4 +1,5 @@
 {
+    "appliance_id": "75df92b4-69d3-4d5d-91b1-c36efa68d9fd",
     "name": "FortiCache",
     "category": "guest",
     "description": "FortiCache VM high performance Web Caching virtual appliances address bandwidth saturation, high latency, and poor performance caused by caching popular internet content locally for carriers, service providers, enterprises and educational networks. FortiCache VM appliances reduce the cost and impact of cached content on the network, while increasing performance and end- user satisfaction by improving the speed of delivery of popular repeated content.",
@@ -12,14 +13,14 @@
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
     "usage": "Default username is admin, no password is set.",
-    "port_name_format": "Port{port1}",
     "symbol": "fortinet.svg",
+    "port_name_format": "Port{port1}",
     "qemu": {
-        "adapter_type": "virtio-net-pci",
+        "adapter_type": "e1000",
         "adapters": 3,
         "ram": 1024,
-        "hda_disk_interface": "ide",
-        "hdb_disk_interface": "ide",
+        "hda_disk_interface": "virtio",
+        "hdb_disk_interface": "virtio",
         "arch": "x86_64",
         "console_type": "telnet",
         "boot_priority": "c",
@@ -116,7 +117,7 @@
             "md5sum": "1e6409a4523ada212dea2ebc50e50a65",
             "filesize": 198656,
             "download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/",
-            "direct_download_url": "http://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty100G.qcow2/download"
+            "direct_download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty100G.qcow2/download"
         }
     ],
     "versions": [

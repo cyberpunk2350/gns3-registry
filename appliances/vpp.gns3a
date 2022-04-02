@@ -1,4 +1,5 @@
 {
+    "appliance_id": "f9a951fe-cafd-4b31-8c83-daef4709943e",
     "name": "VPP",
     "category": "router",
     "description": "Vector Packet Processing (VPP) platform",
@@ -27,14 +28,13 @@
     "images": [
         {
             "filename": "vpp_public-18.10-07.qcow2",
-            "version": "0.7",
+            "version": "18.10-07",
             "md5sum": "3e962985e5bbda0de4dc7893e60f6366",
             "filesize": 2065825792,
             "direct_download_url": "https://sigaba.net/vpp/vpp_public-18.10-07.qcow2"
         }
     ],
     "versions": [
-
         {
             "name": "18.10-07",
             "images": {
@@ -43,4 +43,3 @@
         }
     ]
 }
-

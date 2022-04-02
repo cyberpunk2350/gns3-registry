@@ -1,4 +1,5 @@
 {
+    "appliance_id": "72623124-94a5-4911-b818-d606fb37bdf0",
     "name": "Ubuntu Desktop Guest",
     "category": "guest",
     "description": "Ubuntu is a full-featured Linux operating system which is based on Debian distribution and freely available with both community and professional support, it comes with Unity as its default desktop environment. There are other flavors of Ubuntu available with other desktops as default like Ubuntu Gnome, Lubuntu, Xubuntu, and so on. A tightly-integrated selection of excellent applications is included, and an incredible variety of add-on software is just a few clicks away. A default installation of Ubuntu contains a wide range of software that includes LibreOffice, Firefox, Empathy, Transmission, etc.",
@@ -25,6 +26,27 @@
         "options": "-vga virtio"
     },
     "images": [
+        {
+            "filename": "Ubuntu 20.10 (64bit).vmdk",
+            "version": "20.10",
+            "md5sum": "d7fb9d7b5f6e55349204d493d00507d2",
+            "filesize": 7512915968,
+            "download_url": "http://www.osboxes.org/ubuntu/"
+        },
+        {
+            "filename": "Ubuntu 20.04.2 (64bit).vmdk",
+            "version": "20.04.2",
+            "md5sum": "e995e5768c1dbee94bc02072d841bb50",
+            "filesize": 7625179136,
+            "download_url": "http://www.osboxes.org/ubuntu/"
+        },
+        {
+            "filename": "Ubuntu 20.04 (64bit).vmdk",
+            "version": "20.04",
+            "md5sum": "cf619dfe9bb8d89e2b18b067f02e57a0",
+            "filesize": 6629883904,
+            "download_url": "http://www.osboxes.org/ubuntu/"
+        },
         {
             "filename": "Ubuntu 19.04 (64bit).vmdk",
             "version": "19.04",
@@ -56,6 +78,24 @@
     ],
     "versions": [
         {
+            "name": "20.10",
+            "images": {
+                "hda_disk_image": "Ubuntu 20.10 (64bit).vmdk"
+            }
+        },
+        {
+            "name": "20.04.2",
+            "images": {
+                "hda_disk_image": "Ubuntu 20.04.2 (64bit).vmdk"
+            }
+        },
+        {
+            "name": "20.04",
+            "images": {
+                "hda_disk_image": "Ubuntu 20.04 (64bit).vmdk"
+            }
+        },
+        {
             "name": "19.04",
             "images": {
                 "hda_disk_image": "Ubuntu 19.04 (64bit).vmdk"
@@ -81,4 +121,3 @@
         }
     ]
 }
-

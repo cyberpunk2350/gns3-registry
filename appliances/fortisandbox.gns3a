@@ -1,4 +1,5 @@
 {
+    "appliance_id": "88252124-93a4-4851-9b0f-b0f264705c1a",
     "name": "FortiSandbox",
     "category": "firewall",
     "description": "Today's threats are increasingly sophisticated and often bypass traditional malware security by masking their malicious activity. A sandbox augments your security architecture by validating threats in a separate, secure environment. FortiSandbox offers a powerful combination of advanced detection, automated mitigation, actionable insight, and flexible deployment to stop targeted attacks and subsequent data loss. It's also a key component of our Advanced Threat Protection solution.",
@@ -12,8 +13,8 @@
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
     "usage": "First boot will take some time without console output. Default username is admin, no password is set.",
-    "port_name_format": "Port{port1}",
     "symbol": "fortinet.svg",
+    "port_name_format": "Port{port1}",
     "qemu": {
         "adapter_type": "virtio-net-pci",
         "adapters": 3,
@@ -27,6 +28,13 @@
         "options": "-smp 2"
     },
     "images": [
+        {
+            "filename": "FSA_KVM-v300-build0124-FORTINET.out.kvm.qcow2",
+            "version": "3.1.2",
+            "md5sum": "fc2b9a00d20063a6fa4103360d89a2d4",
+            "filesize": 186253824,
+            "download_url": "https://support.fortinet.com/Download/FirmwareImages.aspx"
+        },
         {
             "filename": "FSA_KVM-v300-build0060-FORTINET.out.kvm.qcow2",
             "version": "3.0.4",
@@ -106,6 +114,13 @@
         }
     ],
     "versions": [
+        {
+            "name": "3.1.2",
+            "images": {
+                "hda_disk_image": "FSA_KVM-v300-build0124-FORTINET.out.kvm.qcow2",
+                "hdb_disk_image": "FSA-datadrive.qcow2"
+            }
+        },
         {
             "name": "3.0.4",
             "images": {

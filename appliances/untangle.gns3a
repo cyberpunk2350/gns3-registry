@@ -1,7 +1,8 @@
 {
+    "appliance_id": "7f1e028f-0e1d-490c-974a-cadbe3402a02",
     "name": "Untangle NG",
     "category": "firewall",
-    "description": "Untangle\u2019s NG Firewall enables you to quickly and easily create the network policies that deliver the perfect balance between security and productivity. Untangle combines Unified Threat Management (UTM)\u2014to address all of the key network threats\u2014with policy management tools that enable you to define access and control by individuals, groups or company-wide. And with industry-leading reports, you\u2019ll have complete visibility into and control over everything that\u2019s happening on your network.",
+    "description": "Untangle's NG Firewall enables you to quickly and easily create the network policies that deliver the perfect balance between security and productivity. Untangle combines Unified Threat Management (UTM)-to address all of the key network threats-with policy management tools that enable you to define access and control by individuals, groups or company-wide. And with industry-leading reports, you'll have complete visibility into and control over everything that's happening on your network.",
     "vendor_name": "Untangle",
     "vendor_url": "https://www.untangle.com/",
     "documentation_url": "http://wiki.untangle.com/index.php/Main_Page",
@@ -114,7 +115,7 @@
             "md5sum": "3411a599e822f2ac6be560a26405821a",
             "filesize": 197120,
             "download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/",
-            "direct_download_url": "http://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
+            "direct_download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
         }
     ],
     "versions": [

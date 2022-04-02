@@ -1,4 +1,5 @@
 {
+    "appliance_id": "46322c6c-10ba-4c6c-823c-12b3ff8b6939",
     "name": "Ubuntu Cloud Guest",
     "category": "guest",
     "description": "The term 'Ubuntu Cloud Guest' refers to the Official Ubuntu images that are available at http://cloud-images.ubuntu.com . These images are built by Canonical. They are then registered on EC2, and compressed tarfiles are made also available for download. For using those images on a public cloud such as Amazon EC2, you simply choose an image and launch it. To use those images on a private cloud, or to run the image on a local hypervisor (such as KVM) you would need to download those images and either publish them to your private cloud, or launch them directly on a hypervisor. The following sections explain in more details how to perform each of those actions",
@@ -26,8 +27,15 @@
     },
     "images": [
         {
+            "filename": "ubuntu-20.04-server-cloudimg-amd64.img",
+            "version": "20.04 (LTS)",
+            "md5sum": "044bc979b2238192ee3edb44e2bb6405",
+            "filesize": 552337408,
+            "download_url": "https://cloud-images.ubuntu.com/releases/focal/release-20210119.1/ubuntu-20.04-server-cloudimg-amd64.img"
+        },
+        {
             "filename": "ubuntu-18.04-server-cloudimg-amd64.img",
-            "version": "18.04",
+            "version": "18.04 (LTS)",
             "md5sum": "f4134e7fa16d7fa766c7467cbe25c949",
             "filesize": 336134144,
             "download_url": "https://cloud-images.ubuntu.com/releases/18.04/release-20180426.2/ubuntu-18.04-server-cloudimg-amd64.img"
@@ -41,14 +49,14 @@
         },
         {
             "filename": "ubuntu-16.04-server-cloudimg-amd64-disk1.img",
-            "version": "16.04",
+            "version": "16.04 (LTS)",
             "md5sum": "22c124ba65ea096cdef8b0a197dd613a",
             "filesize": 290193408,
             "download_url": "https://cloud-images.ubuntu.com/releases/16.04/release-20180405/ubuntu-16.04-server-cloudimg-amd64-disk1.img"
         },
         {
             "filename": "ubuntu-14.04-server-cloudimg-amd64-disk1.img",
-            "version": "14.04",
+            "version": "14.04 (LTS)",
             "md5sum": "d11b89321d41d0eeddcacf73bf0d2262",
             "filesize": 262668800,
             "download_url": "https://cloud-images.ubuntu.com/releases/14.04/release-20180404/ubuntu-14.04-server-cloudimg-amd64-disk1.img"
@@ -62,6 +70,13 @@
         }
     ],
     "versions": [
+        {
+            "name": "20.04 (LTS)",
+            "images": {
+                "hda_disk_image": "ubuntu-20.04-server-cloudimg-amd64.img",
+                "cdrom_image": "ubuntu-cloud-init-data.iso"
+            }
+        },
         {
             "name": "18.04 (LTS)",
             "images": {

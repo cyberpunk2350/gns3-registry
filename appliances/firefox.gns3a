@@ -1,4 +1,5 @@
 {
+    "appliance_id": "b2027465-2959-4ef3-ba56-7b2880e4e711",
     "name": "Firefox",
     "category": "guest",
     "description": "A light Linux based on TinyCore Linux with Firefox preinstalled",
@@ -16,6 +17,7 @@
         "adapter_type": "e1000",
         "adapters": 1,
         "ram": 256,
+        "hda_disk_interface": "ide",
         "arch": "i386",
         "console_type": "vnc",
         "kvm": "allow",

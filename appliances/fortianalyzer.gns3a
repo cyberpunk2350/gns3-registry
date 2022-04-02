@@ -1,4 +1,5 @@
 {
+    "appliance_id": "4fc11cfb-d600-4dd4-af94-e4b16191be2a",
     "name": "FortiAnalyzer",
     "category": "guest",
     "description": "FortiAnalyzer Network Security Logging, Analysis, and Reporting Appliances securely aggregate log data from Fortinet Security Appliances. A comprehensive suite of easily customable reports allows you to quickly analyze and visualize network threats, inefficiencies and usage.",
@@ -12,12 +13,12 @@
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
     "usage": "Default username is admin, no password is set.",
-    "port_name_format": "Port{port1}",
     "symbol": "fortinet.svg",
+    "port_name_format": "Port{port1}",
     "qemu": {
-        "adapter_type": "virtio-net-pci",
+        "adapter_type": "e1000",
         "adapters": 4,
-        "ram": 1024,
+        "ram": 4096,
         "hda_disk_interface": "virtio",
         "hdb_disk_interface": "virtio",
         "arch": "x86_64",
@@ -27,10 +28,31 @@
     },
     "images": [
         {
+            "filename": "FAZ_VM64_KVM-v6-build2288-FORTINET.out.kvm.qcow2",
+            "version": "6.4.5",
+            "md5sum": "e220b48c6e86f8ddc660d578295051a9",
+            "filesize": 152698880,
+            "download_url": "https://support.fortinet.com/Download/FirmwareImages.aspx"
+        },
+        {
+            "filename": "FAZ_VM64_KVM-v6-build1183-FORTINET.out.kvm.qcow2",
+            "version": "6.2.2",
+            "md5sum": "d65ee8754bed66027a6ac095e0dc3e40",
+            "filesize": 152506368,
+            "download_url": "https://support.fortinet.com/Download/FirmwareImages.aspx"
+        },
+        {
             "filename": "FAZ_VM64_KVM-v6-build1050-FORTINET.out.kvm.qcow2",
             "version": "6.2.0",
             "md5sum": "dc123116e4c816d8b4dee244bd671844",
             "filesize": 140177408,
+            "download_url": "https://support.fortinet.com/Download/FirmwareImages.aspx"
+        },
+        {
+            "filename": "FAZ_VM64_KVM-v6-build0349-FORTINET.out.kvm.qcow2",
+            "version": "6.0.6",
+            "md5sum": "47b83be1b22945df7f4f1c081722fd7a",
+            "filesize": 111235072,
             "download_url": "https://support.fortinet.com/Download/FirmwareImages.aspx"
         },
         {
@@ -151,14 +173,35 @@
             "md5sum": "3411a599e822f2ac6be560a26405821a",
             "filesize": 197120,
             "download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/",
-            "direct_download_url": "http://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
+            "direct_download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
         }
     ],
     "versions": [
         {
+            "name": "6.4.5",
+            "images": {
+                "hda_disk_image": "FAZ_VM64_KVM-v6-build2288-FORTINET.out.kvm.qcow2",
+                "hdb_disk_image": "empty30G.qcow2"
+            }
+        },
+        {
+            "name": "6.2.2",
+            "images": {
+                "hda_disk_image": "FAZ_VM64_KVM-v6-build1183-FORTINET.out.kvm.qcow2",
+                "hdb_disk_image": "empty30G.qcow2"
+            }
+        },
+        {
             "name": "6.2.0",
             "images": {
                 "hda_disk_image": "FAZ_VM64_KVM-v6-build1050-FORTINET.out.kvm.qcow2",
+                "hdb_disk_image": "empty30G.qcow2"
+            }
+        },
+        {
+            "name": "6.0.6",
+            "images": {
+                "hda_disk_image": "FAZ_VM64_KVM-v6-build0349-FORTINET.out.kvm.qcow2",
                 "hdb_disk_image": "empty30G.qcow2"
             }
         },

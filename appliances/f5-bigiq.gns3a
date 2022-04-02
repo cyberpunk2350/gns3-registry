@@ -1,4 +1,5 @@
 {
+    "appliance_id": "799f2414-7341-4f55-8b6d-2b3f6d11b1d8",
     "name": "F5 BIG-IQ CM",
     "category": "guest",
     "description": "When you go from managing a few boxes to managing a few dozen, your processes, logistics, and needs all change. BIG-IQ Centralized Management brings all of your devices together, so you can discover, track, upgrade, and deploy more efficiently. You can also monitor key metrics from one location, saving yourself both time and effort.\n\nCentrally manage up to 200 physical, virtual, or virtual clustered multiprocessing (vCMP) based BIG-IP devices. BIG-IQ Centralized Management also handles licensing for up to 5,000 unmanaged devices, so you can spin BIG-IP virtual editions (VEs) up or down as needed.",
@@ -12,9 +13,9 @@
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
     "usage": "Console credentials: root/default\nWebUI credentials: admin/admin\nThe boot process might take a few minutes without providing any output to the console. Please be patient (or set console to vnc to see tty outputs).",
+    "symbol": "mgmt_station.svg",
     "first_port_name": "mgmt",
     "port_name_format": "1.{port1}",
-    "symbol": "mgmt_station.svg",
     "qemu": {
         "adapter_type": "virtio-net-pci",
         "adapters": 2,
@@ -30,6 +31,20 @@
     },
     "images": [
         {
+            "filename": "BIG-IQ-7.1.0.0.0.1511.qcow2",
+            "version": "7.1.0.0",
+            "md5sum": "8d93b06e6eec656584a73ad16be6efa3",
+            "filesize": 4567072768,
+            "download_url": "https://downloads.f5.com/esd/serveDownload.jsp?path=/big-iq/big-iq_cm/7.1.0/english/v7.1.0/&sw=BIG-IQ&pro=big-iq_CM&ver=7.1.0&container=v7.1.0&file=BIG-IQ-7.1.0.0.0.1511.qcow2.zip"
+        },
+        {
+            "filename": "BIG-IQ-7.0.0.1.0.0.6.qcow2",
+            "version": "7.0.0.1",
+            "md5sum": "e86c851a1c43c8c0743f32742d97eba2",
+            "filesize": 4294246400,
+            "download_url": "https://downloads.f5.com/esd/serveDownload.jsp?path=/big-iq/big-iq_cm/7.0.0/english/v7.0.0.1/&sw=BIG-IQ&pro=big-iq_CM&ver=7.0.0&container=v7.0.0.1&file=BIG-IQ-7.0.0.1.0.0.6.qcow2.zip"
+        },
+        {
             "filename": "BIG-IQ-6.0.1.1.0.0.9.qcow2",
             "version": "6.0.1.1",
             "md5sum": "3ae32308fe39d5db555f7f1cdcc734dd",
@@ -42,13 +57,6 @@
             "md5sum": "e3e6389438ba1e1676f507658f767e95",
             "filesize": 3480748032,
             "download_url": "https://downloads.f5.com/esd/serveDownload.jsp?path=/big-iq/big-iq_cm/5.4.0/english/virtual-edition_base-plus-hf2/&sw=BIG-IQ&pro=big-iq_CM&ver=5.4.0&container=Virtual-Edition_Base-Plus-HF2&file=BIG-IQ-5.4.0.2.24.7467.qcow2.zip"
-        },
-        {
-            "filename": "BIG-IQ-5.4.0.0.0.7437.qcow2",
-            "version": "5.4.0",
-            "md5sum": "068b1f4d21048b9b2a082c0c27ef4d53",
-            "filesize": 3300917248,
-            "download_url": "https://downloads.f5.com/esd/serveDownload.jsp?path=/big-iq/big-iq_cm/5.4.0/english/v5.4.0/&sw=BIG-IQ&pro=big-iq_CM&ver=5.4.0&container=v5.4.0&file=BIG-IQ-5.4.0.0.0.7437.qcow2.zip"
         },
         {
             "filename": "BIG-IQ-5.3.0.0.0.1119.qcow2",
@@ -91,10 +99,24 @@
             "md5sum": "1e6409a4523ada212dea2ebc50e50a65",
             "filesize": 198656,
             "download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/",
-            "direct_download_url": "http://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty100G.qcow2/download"
+            "direct_download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty100G.qcow2/download"
         }
     ],
     "versions": [
+        {
+            "name": "7.1.0.0",
+            "images": {
+                "hda_disk_image": "BIG-IQ-7.1.0.0.0.1511.qcow2",
+                "hdb_disk_image": "empty100G.qcow2"
+            }
+        },
+        {
+            "name": "7.0.0.1",
+            "images": {
+                "hda_disk_image": "BIG-IQ-7.0.0.1.0.0.6.qcow2",
+                "hdb_disk_image": "empty100G.qcow2"
+            }
+        },
         {
             "name": "6.0.1.1",
             "images": {
@@ -106,13 +128,6 @@
             "name": "5.4.0.2",
             "images": {
                 "hda_disk_image": "BIG-IQ-5.4.0.2.24.7467.qcow2",
-                "hdb_disk_image": "empty100G.qcow2"
-            }
-        },
-        {
-            "name": "5.4.0",
-            "images": {
-                "hda_disk_image": "BIG-IQ-5.4.0.0.0.7437.qcow2",
                 "hdb_disk_image": "empty100G.qcow2"
             }
         },

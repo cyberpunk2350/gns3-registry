@@ -1,4 +1,5 @@
 {
+    "appliance_id": "c731e7d0-5893-4072-a681-998df576a67c",
     "name": "ClearOS CE",
     "category": "firewall",
     "description": "ClearOS is an operating system for your Server, Network, and Gateway systems. It is designed for homes, small to medium businesses, and distributed environments. ClearOS is commonly known as the Next Generation Small Business Server, while including indispensable Gateway and Networking functionality. It delivers a powerful IT solution with an elegant user interface that is completely web-based. Simply put.. ClearOS is the new way of delivering IT.",
@@ -22,6 +23,13 @@
         "kvm": "require"
     },
     "images": [
+        {
+            "filename": "ClearOS-7.6-DVD-x86_64.iso",
+            "version": "7.6",
+            "md5sum": "aca5827a37c18549aee2f5bbfbe49922",
+            "filesize": 1141899264,
+            "download_url": "https://www.clearos.com/clearfoundation/software/clearos-downloads"
+        },
         {
             "filename": "ClearOS-7.5-DVD-x86_64.iso",
             "version": "7.5",
@@ -56,10 +64,17 @@
             "md5sum": "3411a599e822f2ac6be560a26405821a",
             "filesize": 197120,
             "download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/",
-            "direct_download_url": "http://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
+            "direct_download_url": "https://sourceforge.net/projects/gns-3/files/Empty%20Qemu%20disk/empty30G.qcow2/download"
         }
     ],
     "versions": [
+        {
+            "name": "7.6",
+            "images": {
+                "hda_disk_image": "empty30G.qcow2",
+                "cdrom_image": "ClearOS-7.6-DVD-x86_64.iso"
+            }
+        },
         {
             "name": "7.5",
             "images": {

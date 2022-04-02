@@ -1,4 +1,5 @@
 {
+    "appliance_id": "a210781e-471a-4628-8f43-83941c3909a6",
     "name": "ZeroShell",
     "category": "router",
     "description": "Zeroshell is a Linux distribution for servers and embedded devices aimed at providing the main network services a LAN requires. It is available in the form of Live CD or Compact Flash image and you can configure and administer it using your web browser.",
@@ -15,11 +16,21 @@
         "adapter_type": "e1000",
         "adapters": 4,
         "ram": 256,
+        "hda_disk_interface": "ide",
         "arch": "x86_64",
         "console_type": "vnc",
         "kvm": "allow"
     },
     "images": [
+        {
+            "filename": "ZeroShell-3.9.3-X86-USB.img",
+            "version": "3.9.3",
+            "md5sum": "9be2b399f59df51e5026d81e45b8caf3",
+            "filesize": 1992294400,
+            "download_url": "http://www.zeroshell.org/download/",
+            "direct_download_url": "http://www.zeroshell.net/listing/ZeroShell-3.9.3-X86-USB.img.gz",
+            "compression": "gzip"
+        },
         {
             "filename": "ZeroShell-3.8.2-X86-USB.img",
             "version": "3.8.2",
@@ -58,6 +69,12 @@
         }
     ],
     "versions": [
+        {
+            "name": "3.9.3",
+            "images": {
+                "hda_disk_image": "ZeroShell-3.9.3-X86-USB.img"
+            }
+        },
         {
             "name": "3.8.2",
             "images": {
