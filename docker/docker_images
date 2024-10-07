@@ -1,0 +1,31 @@
+# Name			Directory	[Base Image]	[Build Options]
+
+--platform=linux/amd64					# global options
+
+chromium		chromium
+endhost			endhost
+haproxy			haproxy
+ipterm-base		ipterm/base
+ipterm			ipterm/cli
+webterm			ipterm/web
+jupyter:v2		jupyter
+jupyter27:v2		jupyter-2.7
+# kalilinux: base image is updated too often, use manual build on base updates
+kalilinux		kalilinux	NONE
+mikrotik-winbox		mikrotik-winbox
+ostinato-wireshark	ostinato-wireshark
+openvswitch		openvswitch
+ovs-snmp		ovs-snmp			--platform=linux/arm64
+pyats			pyats
+ubuntu:noble	ubuntu
+
+# Tests
+xeyes			xeyes
+
+#
+# The following images are not used by any appliance
+#
+
+# GNS3 Developers
+#dhcp			dhcp
+#snmpsimulator		snmpsimulator

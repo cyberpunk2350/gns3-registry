@@ -1,0 +1,539 @@
+#!/usr/bin/env python3
+
+# Copyright (C) 2022 Bernhard Ehlers
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+docker_make - (re)build outdated docker images
+
+usage: docker_make [--help] [--all] [--dir DIR] [--dry-run] [--file FILE]
+                   [image ...]
+
+positional arguments:
+  image                 images to build additionally
+
+optional arguments:
+  --help, -h, -?        prints this screen
+  --all, -a             build all images
+  --dir DIR, -C DIR     change directory before building
+  --dry-run, -n         do not build images, just print them
+  --file FILE, -f FILE  use FILE as image config (default: 'docker_images')
+
+The docker images and their properties are configured in a
+file, by default 'docker_images' in the current directory.
+
+Format of the lines in the configuration file:
+    Name <tab> Directory [<tab> Base Image] [<tab> Build Options]
+        or
+    Global Build Options
+
+When running without an image arg, it checks all images,
+if the directory containing its Dockerfile has changed or
+its base image has been updated.
+
+In some special cases a docker image needs a forced rebuild.
+For that add the list of images or base images, to be rebuild,
+to the arguments. When using the option -a/--all, all images are
+forcibly rebuild, except those specified on the command line.
+
+The environment variable DOCKER_REPOSITORY must be set to the
+Docker repository to use for name-only targets.
+"""
+
+import os
+import sys
+import argparse
+import concurrent.futures
+import datetime
+import json
+import re
+import shlex
+import subprocess
+import time
+import dateutil.parser
+import dxf
+import requests.exceptions
+
+docker_login = {}
+image_info = {}
+images = []
+
+
+parser = argparse.ArgumentParser(add_help=False, \
+                    description='%(prog)s - (re)build outdated docker images')
+parser.add_argument('--help', '-h', '-?', action='help',
+                    help='prints this screen')
+parser.add_argument('--all', '-a', action='store_true',
+                    help='build all images')
+parser.add_argument('--dir', '-C', action='append',
+                    help='change directory before building')
+parser.add_argument('--dry-run', '-n', action='store_true',
+                    help='do not build images, just print them')
+parser.add_argument('--file', '-f', default='docker_images',
+                    help="use FILE as image config (default: '%(default)s')")
+parser.add_argument('image', nargs="*",
+                    help='images to build additionally')
+
+
+# regex for repository
+RE_REPOSITORY = re.compile(r'''
+(?:(?P<host>[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?	# host name
+            (?:						# followed by ...
+               (?:\.[a-zA-Z0-9]				# domain
+                    (?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)+
+               (?::[0-9]+)?				# and optional port
+               |					# or ...
+               :[0-9]+)					# port
+)/)?							# finally a /
+
+(?P<repo>[a-z0-9]+(?:(?:\.|__?|-+)[a-z0-9]+)*		# repo component
+         (?:/[a-z0-9]+(?:(?:\.|__?|-+)[a-z0-9]+)*)*	# more components
+)
+(?::(?P<tag>[a-zA-Z0-9_][a-zA-Z0-9_.-]{,127}))?		# optional tag
+(?:@(?P<digest>[a-z0-9]+(?:[.+_-][a-z0-9]+)*		# optional digest
+               :[0-9a-f]{32,}))*
+''', re.VERBOSE)
+
+def parse_repository(repository):
+    """ extract registry, repo and tag from repository """
+    # verify repository format and extract components
+    match = RE_REPOSITORY.fullmatch(repository)
+    if not match:
+        raise ValueError("invalid reference format")
+    registry = (match.group('host') or "docker.io").lower()
+    repo = match.group('repo')
+    tag = match.group('digest') or match.group('tag') or "latest"
+    len_registry = len(registry)
+    # special handling for docker.io
+    if registry == "docker.io":
+        registry = "registry-1.docker.io"
+        if "/" not in repo:
+            repo = "library/" + repo
+    # check length of repository string (without tag)
+    if len_registry + len(repo) > 254:
+        raise ValueError("repository name must not be more than 255 characters")
+    return registry, repo, tag
+
+
+def docker_auth(docker, response):
+    """ authenticate docker access """
+    docker.authenticate(docker.registry_auth[0], docker.registry_auth[1],
+                        response=response)
+
+
+def retry(tries, func, *func_args, **func_kwargs):
+    """ retry requests based function """
+    while True:
+        tries -= 1
+        try:
+            return func(*func_args, **func_kwargs)
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout):
+            if tries <= 0:
+                raise
+        except requests.exceptions.HTTPError as err:
+            if tries <= 0 or err.response.status_code not in \
+                             (429, 500, 502, 503, 504):
+                raise
+        time.sleep(3)
+
+
+def get_time_layers(repository):
+    """
+    get created time and layer info from the docker registry
+
+    To retrieve this information the Docker registry client dxf is used.
+    https://github.com/davedoesdev/dxf
+    """
+
+    try:
+        registry, repo, tag = parse_repository(repository)
+
+        # open docker connection
+        with dxf.DXF(registry, repo, docker_auth, timeout=30) as docker:
+            docker.registry_auth = docker_login.get(registry, [None, None])
+            # get config digest
+            try:
+                digest = retry(3, docker.get_digest, tag, platform="linux/amd64")
+            except dxf.exceptions.DXFUnauthorizedError:
+                return None
+            except requests.exceptions.HTTPError as err:
+                if err.response.status_code in (401, 403, 404):
+                    return None
+                raise
+
+            # get config: pull_blob(digest)
+            data = json.loads(b''.join(retry(3, docker.pull_blob, digest)))
+
+        return {"created": dateutil.parser.parse(data["created"]),
+                "layers": data["rootfs"]["diff_ids"]}
+
+    except json.JSONDecodeError:
+        sys.exit(f"{repository}: Invalid JSON")
+    except (dxf.exceptions.DXFError, ValueError) as err:
+        sys.exit(f"{repository}: {err}")
+    except requests.exceptions.RequestException as err:
+        msg = str(err)
+        match = re.search(r"\(Caused by ([a-zA-Z0-9_]+)\('?[^:']*[:'] *(.*)'\)",
+                          msg)
+        if match:
+            msg = match.group(2)
+        sys.exit(f"{repository}: {msg}")
+    except KeyError:
+        sys.exit(f"{repository}: missing information from registry")
+
+
+def expand_base_image(base_name, target):
+    """ expand base image """
+    options = []
+    base_split = base_name.split("/", maxsplit=1)
+    if len(base_split) == 2 and \
+       base_split[0] in ("$DOCKER_REPOSITORY", "${DOCKER_REPOSITORY}"):
+        try:
+            target_base = target[:target.rindex("/")]
+        except ValueError as err:
+            raise ValueError(f"{base_name}: "
+                             f"Invalid target repository {target}") from err
+        base_name = target_base + "/" + base_split[1]
+        options = ["--build-arg", "DOCKER_REPOSITORY=" + target_base]
+    return (base_name, options)
+
+
+def full_image_name(image_name, default_repository):
+    """ get full image name """
+    if "/" in image_name:
+        return image_name
+    if not default_repository:
+        raise ValueError(f"{image_name}: Missing default repository")
+    return default_repository + "/" + image_name
+
+
+def image_add_tag(image_name):
+    """ return image name including tag """
+    name = image_name.split("/")[-1]
+    if image_name not in ("scratch", "NONE") and \
+       ":" not in name and "@" not in name:
+        image_name += ":latest"
+    return image_name
+
+
+def dockerfile_base(directory):
+    """ get base repository from Dockerfile """
+    base = None
+    re_from = re.compile(r'\s*FROM\s+(\S+)', re.IGNORECASE)
+    try:
+        with open(os.path.join(directory, "Dockerfile"), "r",
+                  encoding="utf-8") as dockerfile:
+            for dockerline in dockerfile:
+                match = re_from.match(dockerline)
+                if match:
+                    base = match.group(1)
+                    break
+    except OSError as err:
+        raise ValueError(f"Dockerfile: {err}") from err
+    if not base:
+        raise ValueError("Dockerfile: Missing FROM instruction")
+    return base
+
+
+RE_CONF_LINE = re.compile(r'''
+(?:|					# empty line or...
+ (?P<gbl_opt>[^\t\#][^\t]*)|		# global option or...
+ (?P<name>[^\t\#][^\t]*)		# name +
+ \t+(?P<dir>[^\t\#][^\t]*)		# directory +
+ (?:\t+(?P<base>[^\t\#'"-][^\t]*))?	# optional base +
+ (?:\t+(?P<opt>['"-][^\t]*))?		# optional option
+)
+(?:[\t ]*\#.*)?				# followed by optional comment
+''', re.VERBOSE)
+
+def get_images(image_file):
+    """ read images configuration file
+
+    Format of the lines in the configuration file:
+        Name <tab> Directory [<tab> Base Image] [<tab> Build Options]
+            or
+        Global Build Options
+
+    If the base image is not given, it is extracted from <directory>/Dockerfile.
+    """
+    gbl_options = []
+    name_set = set()
+    try:
+        lineno = 0
+        with open(image_file, "r", encoding="utf-8") as img_file:
+            for line in img_file:
+                lineno += 1
+                match = RE_CONF_LINE.fullmatch(line.strip())
+                if not match:
+                    sys.exit(f"{image_file} line {lineno}: "
+                             "invalid number of fields")
+                if match.group('gbl_opt'):
+                    gbl_options = shlex.split(match.group('gbl_opt'))
+                if match.group('name') and match.group('dir'):
+                    name = match.group('name')
+                    try:
+                        parse_repository(full_image_name(name, "test.io/test"))
+                    except ValueError:
+                        sys.exit(f"{image_file} line {lineno}: "
+                                 f"invalid image name '{name}'")
+                    if name == "scratch":
+                        sys.exit(f"{image_file} line {lineno}: "
+                                 "Reserved image name 'scratch'")
+                    image_name = image_add_tag(name)
+                    if image_name in name_set:
+                        sys.exit(f"{image_file}: "
+                                 f"multiple entries for {name}")
+                    name_set.add(image_name)
+                    directory = match.group('dir')
+                    if not os.path.isdir(directory):
+                        sys.exit(f"{image_file} line {lineno}: "
+                                 f"unknown directory '{directory}'")
+                    base = match.group('base')
+                    if not base:	# extract base repo from Dockerfile
+                        base = dockerfile_base(directory)
+                    base = image_add_tag(base)
+                    options = gbl_options.copy()
+                    if match.group('opt'):
+                        options += shlex.split(match.group('opt'))
+                    images.append({"name": name, "image": image_name,
+                                   "dir": directory, "base": base,
+                                   "options": options})
+    except OSError as err:
+        sys.exit(f"Can't read images file: {err}")
+    except ValueError as err:
+        sys.exit(f"{image_file} line {lineno}: {err}")
+    if not images:
+        sys.exit("Empty image configuration")
+
+
+def init_image_info():
+    """ initialize image info structure """
+    dt_min = datetime.datetime.fromtimestamp(0, tz=datetime.timezone.utc)
+    image_info["scratch"] = {"created": dt_min, "layers": [None]}
+    image_info["NONE"] = image_info["scratch"].copy()
+
+
+def mtime_tree(directory):
+    """ get modification time of a directory tree """
+    mtime = 0
+    for root, _, filenames in os.walk(directory):
+        mtime = max(mtime, os.stat(root).st_mtime)
+        for fname in filenames:
+            mtime = max(mtime, os.stat(os.path.join(root, fname)).st_mtime)
+    return mtime
+
+
+def needs_rebuild(image, default_repository=None):
+    """ check if an image needs rebuilding """
+    full_name = full_image_name(image["image"], default_repository)
+    base_name, _ = expand_base_image(image["base"], full_name)
+
+    # get information of base image, if unknown
+    if base_name not in image_info:
+        image_info[base_name] = get_time_layers(base_name)
+    if not image_info[base_name]:
+        sys.exit(f"{image['name']}: Missing base image: {base_name}")
+
+    # get information of image, if unknown
+    if full_name not in image_info:
+        image_info[full_name] = get_time_layers(full_name)
+    if not image_info[full_name]:
+        return "Image missing in repository"
+
+    # check if base image has changed
+    base_layer = image_info[base_name]["layers"][-1]
+    if base_layer and base_layer not in image_info[full_name]["layers"]:
+        return "Base image has changed"
+
+    # check if build directory has changed, needs full git history
+    env = os.environ.copy()
+    env["LC_ALL"] = "C"
+    try:
+        # check if git repository is up-to-date
+        proc = subprocess.run(["git", "-C", image["dir"], "status",
+                               "--porcelain", "--", "."],
+                              capture_output=True,
+                              check=False,
+                              env=env,
+                              universal_newlines=True)
+        if proc.returncode != 0 and "not a git repository" not in proc.stderr:
+            # Fatal error
+            sys.exit(f"{image['name']}: Can't get git status: " + \
+                     proc.stderr.rstrip('\r\n'))
+        if proc.returncode != 0 or proc.stdout.rstrip('\r\n'):
+            # Non-fatal error or changes: use modification date of the files
+            mtime = mtime_tree(image["dir"])
+            rebuild_reason = "Files in docker context more recent than image"
+        else:
+            # clean git repository: use "git log" to get commit time
+            proc = subprocess.run(["git", "-C", image["dir"], "log",
+                                   "--show-pulls", "-n", "1",
+                                   "--pretty=tformat:%ct", "--", "."],
+                                  capture_output=True,
+                                  check=True,
+                                  env=env,
+                                  universal_newlines=True)
+            mtime = int(proc.stdout.strip())
+            rebuild_reason = "Git change more recent than image"
+    except OSError as err:
+        sys.exit(f"Can't run git: {err}")
+    except subprocess.CalledProcessError as err:
+        sys.exit(f"{image['name']}: Can't get commit date: " + \
+                 err.stderr.rstrip('\r\n'))
+    except ValueError as err:
+        sys.exit(f"{image['name']}: Can't get commit date: {err}")
+
+    if mtime > image_info[full_name]["created"].timestamp():
+        return rebuild_reason
+
+    return None
+
+
+def build(image, default_repository=None):
+    """ build image """
+    full_name = full_image_name(image["image"], default_repository)
+    _, options = expand_base_image(image["base"], full_name)
+    options += image["options"]
+    try:
+        subprocess.run(["docker", "buildx", "build"] + options + \
+                       ["--push", "--tag", full_name, image["dir"]],
+                       check=True)
+    except OSError as err:
+        sys.exit(f"Can't run docker: {err}")
+    except subprocess.CalledProcessError as err:
+        sys.exit(err.returncode)
+    print()
+
+    image_info.pop(full_name, None)	# remove outdated image information
+
+
+def fill_login_table():
+    """ fill login table from DOCKER_LOGIN* environment variables """
+    login_table = {}
+    for key, val in list(os.environ.items()):
+        if key.startswith("DOCKER_LOGIN"):
+            val_split = val.strip().split(maxsplit=2)
+            if len(val_split) != 3:
+                sys.exit(f"{key} requires 3 fields: registry user password")
+            registry = val_split[0].lower()
+            if registry == "docker.io":
+                registry = "registry-1.docker.io"
+            if registry in login_table:
+                sys.exit(f"DOCKER_LOGIN: {registry} defined multiple times")
+            login_table[registry] = val_split[1:3]
+            del os.environ[key]
+    return login_table
+
+
+def get_images_info(all_flag, forced_images):
+    """ get information of all images and base images """
+    image_list = set()
+    for image in images:
+        if "/" in image["image"]:	# full image name
+            base_repos = [None]
+        else:				# name-only image name
+            base_repos = docker_repositories
+        if xor(all_flag, image["image"] in forced_images or \
+                         image["base"] in forced_images):
+            continue			# no need to get info of forced images
+        for repo in base_repos:
+            full_name = full_image_name(image["image"], repo)
+            base_name, _ = expand_base_image(image["base"], full_name)
+            image_list.add(base_name)
+            image_list.add(full_name)
+    for image in image_info:
+        image_list.discard(image)	# image info already available
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(get_time_layers, image): image
+                   for image in image_list}
+        for future in concurrent.futures.as_completed(futures):
+            image_info[futures[future]] = future.result()
+
+
+def rebuild_images(dry_run, all_flag, forced_images):
+    """ rebuild images """
+    for image in images:
+        if "/" in image["image"]:	# full image name
+            base_repos = [None]
+        else:				# name-only image name
+            base_repos = docker_repositories
+        reason = False
+        if xor(all_flag, image["image"] in forced_images or \
+                         image["base"] in forced_images):
+            reason = "Rebuild triggered by command line"
+        else:				# check if image needs rebuilding
+            for repo in base_repos:
+                reason = needs_rebuild(image, repo)
+                if reason:
+                    break
+        if reason:			# rebuild image
+            for repo in base_repos:
+                print(f"*** {full_image_name(image['name'], repo)}\n"
+                      f"Reason: {reason}\n")
+                if not dry_run:
+                    build(image, repo)
+
+
+def xor(*params):
+    """ logical xor """
+    result = False
+    for arg in params:
+        result = result != bool(arg)
+    return result
+
+
+# main
+args = parser.parse_args()
+sys.stdout.reconfigure(line_buffering=True)
+
+# DOCKER_REPOSITORY environment
+docker_repositories = os.environ.get("DOCKER_REPOSITORY", "") \
+                      .strip().lower().split()
+for docker_repo in docker_repositories:
+    try:
+        parse_repository(docker_repo)
+    except ValueError as err_info:
+        sys.exit(f"DOCKER_REPOSITORY: {docker_repo}: {err_info}")
+
+# fill user/password table
+docker_login = fill_login_table()
+
+if args.dir:
+    try:
+        os.chdir(os.path.join(*args.dir))
+    except OSError as err_info:
+        sys.exit(f"Can't change directory: {err_info}")
+
+get_images(args.file)
+init_image_info()
+
+# check arguments
+all_inames = {img["image"] for img in images} \
+             .union(img["base"] for img in images)
+for idx, iname in enumerate(args.image):
+    iname_tag = image_add_tag(iname)
+    if iname_tag not in all_inames:
+        sys.exit(f"Image {iname} not found in '{args.file}' configuration file")
+    args.image[idx] = iname_tag
+for img in images:
+    if "/" not in img["image"] and not docker_repositories:
+        sys.exit(f"{img['name']}: "
+                 "Environment variable DOCKER_REPOSITORY is not defined")
+
+# rebuild images
+get_images_info(args.all, args.image)
+rebuild_images(args.dry_run, args.all, args.image)

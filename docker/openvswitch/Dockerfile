@@ -1,9 +1,22 @@
 FROM alpine:latest
 
-RUN apk add --update openvswitch nano && rm -rf /var/cache/apk/*
+RUN apk add --no-cache openvswitch nano bash bash-completion
 
-VOLUME /etc/openvswitch/
+# Make bash the default shell
+RUN sed -i s,/bin/ash,/bin/bash, /etc/passwd
 
-ADD boot.sh /bin/boot.sh
+# Enable bash completion
+RUN echo -e "source /etc/bash/bash_completion.sh" >> ~/.bashrc
 
-CMD /bin/sh /bin/boot.sh
+# Enable openvswitch bash completion
+RUN echo -e "source /usr/share/bash-completion/completions/ovs-vsctl-bashcomp.bash" >> ~/.bashrc
+RUN echo -e "source /usr/share/bash-completion/completions/ovs-appctl-bashcomp.bash" >> ~/.bashrc
+
+# Configure the prompt
+RUN echo -e "PS1='\h:\w\$ '" >> ~/.bashrc
+
+VOLUME [ "/root", "/etc/openvswitch" ]
+
+ADD init.sh /etc/openvswitch/
+
+CMD /etc/openvswitch/init.sh; bash

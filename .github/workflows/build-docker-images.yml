@@ -1,0 +1,115 @@
+name: Build Docker images
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'docker/**'
+  schedule:
+    - cron: '37 7 * * 3'
+  workflow_dispatch:
+    inputs:
+      images:
+        description: 'List of images to be built'
+        required: false
+        type: string
+
+# Pause on concurrent builds
+concurrency:
+  group: build-docker-images
+
+jobs:
+  docker-images:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Check out repository code
+        # https://github.com/marketplace/actions/checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up QEMU
+        # https://github.com/marketplace/actions/docker-setup-qemu
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        # https://github.com/marketplace/actions/docker-setup-buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub Registry
+        # https://github.com/marketplace/actions/docker-login
+        # set the condition depending on whether you want to login to Docker.
+        if: true
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        # https://github.com/marketplace/actions/docker-login
+        # set the condition depending on whether you want to login to ghcr.io.
+        if: true
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install python requirements
+        run: python3 -m pip install --requirement .github/bin/requirements.txt
+
+      - name: Build and push images
+        env:
+          # DOCKER_REPOSITORY - Repository for name-only images
+          # Using multiple repositories will build images in all of them.
+          DOCKER_REPOSITORY: |
+            # DockerHub:
+            ${{ secrets.DOCKERHUB_REPOSITORY }}
+            # GitHub Container Registry:
+            ghcr.io/${{ github.repository_owner }}
+          #
+          # Variables whose name are starting with "DOCKER_LOGIN"
+          # contain the user/password for a docker registry.
+          # They are only needed to authenticate into private repositories.
+          #
+          # DockerHub:
+          #DOCKER_LOGIN_DH: >-
+          #  docker.io
+          #  ${{ secrets.DOCKERHUB_USERNAME }}
+          #  ${{ secrets.DOCKERHUB_TOKEN }}
+          #
+          # GitHub Container Registry:
+          #DOCKER_LOGIN_GH: >-
+          #  ghcr.io
+          #  ${{ github.repository_owner }}
+          #  ${{ secrets.GITHUB_TOKEN }}
+          #
+          IMAGES: ${{ inputs.images }}
+        run: |
+          DOCKER_REPOSITORY=$(echo "$DOCKER_REPOSITORY" | sed '/^#/d')
+          set -f
+          set -- $IMAGES
+          set +f
+
+          # get image version
+          get_image_version() {
+            local object
+            object='config.Labels."org.opencontainers.image.version"'
+            docker buildx imagetools inspect --format '{{json .Image}}' "$1" | \
+              jq -r ".$object // .\"linux/amd64\".$object // empty"
+          }
+
+          # special treatment for kalilinux: rebuild when image version changes
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
+            basever=$(get_image_version kalilinux/kali-last-release:amd64)
+            imagever=$(get_image_version gns3/kalilinux)
+            [ -z "$basever" ] || [ "$basever" = "$imagever" ] || \
+              set -- "$@" kalilinux
+          fi
+
+          # use option --dir to use a subdirectory as a docker base dir
+          python3 "$GITHUB_WORKSPACE/.github/bin/docker_make" --dir "docker" "$@"

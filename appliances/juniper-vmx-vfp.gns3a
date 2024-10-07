@@ -8,23 +8,24 @@
     "documentation_url": "http://www.juniper.net/techpubs/",
     "product_name": "Juniper vMX vFP",
     "product_url": "http://www.juniper.net/us/en/products-services/routing/mx-series/vmx/",
-    "registry_version": 3,
+    "registry_version": 4,
     "status": "experimental",
     "maintainer": "none",
     "maintainer_email": "developers@gns3.net",
-    "usage": "Initial username is root, password is root.\n",
+    "usage": "Connect VCP by port Eth1.\nData port ge/xe-x/0/0 to ge/xe-x/0/9 mapping to Eth3 to Eth12.\nInitial username is root, password is root.\n",
     "symbol": "juniper-vmx.svg",
     "first_port_name": "Eth0",
     "port_name_format": "Eth{port1}",
     "qemu": {
         "adapter_type": "virtio-net-pci",
-        "adapters": 12,
+        "adapters": 13,
         "ram": 4096,
+        "cpus": 4,
         "hda_disk_interface": "ide",
         "arch": "x86_64",
         "console_type": "telnet",
         "kvm": "require",
-        "options": "-nographic -enable-kvm -smp cpus=3"
+        "options": "-nographic -enable-kvm -machine q35,smbios-entry-point-type=32"
     },
     "images": [
         {

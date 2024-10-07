@@ -8,7 +8,7 @@
     "documentation_url": "http://www.juniper.net/techpubs/",
     "product_name": "Juniper vQFX RE",
     "product_url": "https://www.juniper.net/us/en/dm/free-vqfx-trial/",
-    "registry_version": 3,
+    "registry_version": 4,
     "status": "experimental",
     "maintainer": "none",
     "maintainer_email": "developers@gns3.net",
@@ -19,11 +19,12 @@
         "adapter_type": "virtio-net-pci",
         "adapters": 12,
         "ram": 1024,
+        "cpus": 2,
         "hda_disk_interface": "ide",
         "arch": "x86_64",
         "console_type": "telnet",
         "kvm": "require",
-        "options": "-nographic -smp 2"
+        "options": "-nographic -machine q35,smbios-entry-point-type=32"
     },
     "images": [
         {

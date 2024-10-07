@@ -25,7 +25,7 @@ import jsonschema
 from picture import get_size
 
 APPLIANCE_IDS = []
-SCHEMA_VERSIONS = [3, 4, 5, 6]
+SCHEMA_VERSIONS = [4, 5, 6, 7, 8]
 
 warnings = 0
 
@@ -95,9 +95,10 @@ def check_appliance(appliance):
         for image in appliance_json['images']:
             if image['filename'] in images:
                 print('Duplicate image filename ' + image['filename'])
-                sys.exit(1)
-            if image['md5sum'] in md5sums:
-                print('Duplicate image md5sum ' + image['md5sum'])
+                warnings += 1
+            md5sum = image.get('checksum') or image.get('md5sum')
+            if md5sum in md5sums:
+                print('Duplicate image md5sum ' + md5sum)
                 sys.exit(1)
             versions_found = False
             for version in appliance_json['versions']:
@@ -107,7 +108,7 @@ def check_appliance(appliance):
                 print('Unused image ' + image['filename'] + ' in ' + appliance)
                 warnings += 1
             images[image['filename']] = image['version']
-            md5sums.add(image['md5sum'])
+            md5sums.add(md5sum)
 
         for version in appliance_json['versions']:
             version_match = False
@@ -119,7 +120,7 @@ def check_appliance(appliance):
                     version_match = True
             if not version_match:
                 print('Version mismatch for version ' + version['name'] + ' in ' + appliance)
-                sys.exit(1)
+                warnings += 1
 
 
 def check_packer(packer):
@@ -140,18 +141,13 @@ def image_get_height(filename):
     return height
 
 
-use_imagemagick = shutil.which("identify")
-
 
 def check_symbol(symbol):
     licence_file = os.path.join('symbols', symbol.replace('.svg', '.txt'))
     if not os.path.exists(licence_file):
         print("Missing licence {} for {}".format(licence_file, symbol))
         sys.exit(1)
-    if use_imagemagick:
-        height = int(subprocess.check_output(['identify', '-format', '%h', os.path.join('symbols', symbol)], shell=False))
-    else:
-        height = image_get_height(os.path.join('symbols', symbol))
+    height = image_get_height(os.path.join('symbols', symbol))
     if height > 70:
         print("Symbol height of {} is too big {} > 70".format(symbol, height))
         sys.exit(1)
@@ -174,7 +170,7 @@ def main():
     for packer in os.listdir('packer'):
         check_packer(packer)
     if warnings:
-        print("{} warning!".format(warnings))
+        print("{} warning(s) detected!".format(warnings))
     else:
         print("Everything is ok!")
 

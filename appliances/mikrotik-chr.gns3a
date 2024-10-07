@@ -8,7 +8,7 @@
     "documentation_url": "http://wiki.mikrotik.com/wiki/Manual:CHR",
     "product_name": "MikroTik Cloud Hosted Router",
     "product_url": "http://www.mikrotik.com/download",
-    "registry_version": 3,
+    "registry_version": 4,
     "status": "stable",
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
@@ -17,8 +17,8 @@
     "port_name_format": "ether{port1}",
     "qemu": {
         "adapter_type": "virtio-net-pci",
-        "adapters": 2,
-        "ram": 128,
+        "adapters": 8,
+        "ram": 384,
         "hda_disk_interface": "virtio",
         "arch": "x86_64",
         "console_type": "telnet",
@@ -28,80 +28,80 @@
     },
     "images": [
         {
-            "filename": "chr-7.1rc7.img",
-            "version": "7.1rc7",
-            "md5sum": "04bc0ae1e5fbbda1522135bc57cf6560",
+            "filename": "chr-7.16.img",
+            "version": "7.16",
+            "md5sum": "a4c2d00a87e73b3129cd66a4e0743c9a",
             "filesize": 134217728,
             "download_url": "http://www.mikrotik.com/download",
-            "direct_download_url": "https://download.mikrotik.com/routeros/7.1rc7/chr-7.1rc7.img.zip",
+            "direct_download_url": "https://download.mikrotik.com/routeros/7.16/chr-7.16.img.zip",
             "compression": "zip"
         },
         {
-            "filename": "chr-7.1.img",
-            "version": "7.1",
-            "md5sum": "41545bc7b55717fe5bb1e489ee39ca45",
+            "filename": "chr-7.15.3.img",
+            "version": "7.15.3",
+            "md5sum": "5af8c748a0de4e8e8b303180738721a9",
             "filesize": 134217728,
             "download_url": "http://www.mikrotik.com/download",
-            "direct_download_url": "https://download.mikrotik.com/routeros/7.1/chr-7.1.img.zip",
+            "direct_download_url": "https://download.mikrotik.com/routeros/7.15.3/chr-7.15.3.img.zip",
             "compression": "zip"
         },
         {
-            "filename": "chr-6.49rc2.img",
-            "version": "6.49rc2",
-            "md5sum": "e1088f8f64ac3d6ecf2e56ac96261226",
-            "filesize": 67108864,
+            "filename": "chr-7.14.3.img",
+            "version": "7.14.3",
+            "md5sum": "73f527efef81b529b267a0683cb87617",
+            "filesize": 134217728,
             "download_url": "http://www.mikrotik.com/download",
-            "direct_download_url": "https://download.mikrotik.com/routeros/6.49rc2/chr-6.49rc2.img.zip",
+            "direct_download_url": "https://download.mikrotik.com/routeros/7.14.3/chr-7.14.3.img.zip",
             "compression": "zip"
         },
         {
-            "filename": "chr-6.49.1.img",
-            "version": "6.49.1",
-            "md5sum": "6c896c4c853de99f2ea77f0f4b102261",
+            "filename": "chr-6.49.17.img",
+            "version": "6.49.17",
+            "md5sum": "ad9f4bd8cd4965a403350deeb5d35b96",
             "filesize": 67108864,
             "download_url": "http://www.mikrotik.com/download",
-            "direct_download_url": "https://download.mikrotik.com/routeros/6.49.1/chr-6.49.1.img.zip",
+            "direct_download_url": "https://download.mikrotik.com/routeros/6.49.17/chr-6.49.17.img.zip",
             "compression": "zip"
         },
         {
-            "filename": "chr-6.48.5.img",
-            "version": "6.48.5",
-            "md5sum": "d14debd4cd989f16f695b5b075960703",
+            "filename": "chr-6.49.13.img",
+            "version": "6.49.13",
+            "md5sum": "18349e1c3209495e571bcbee8a7e3259",
             "filesize": 67108864,
             "download_url": "http://www.mikrotik.com/download",
-            "direct_download_url": "https://download.mikrotik.com/routeros/6.48.5/chr-6.48.5.img.zip",
+            "direct_download_url": "https://download.mikrotik.com/routeros/6.49.13/chr-6.49.13.img.zip",
             "compression": "zip"
         }
     ],
     "versions": [
         {
-            "name": "7.1rc7",
+            "name": "7.16",
             "images": {
-                "hda_disk_image": "chr-7.1rc7.img"
+                "hda_disk_image": "chr-7.16.img"
             }
         },
         {
-            "name": "7.1",
+            "name": "7.15.3",
             "images": {
-                "hda_disk_image": "chr-7.1.img"
+                "hda_disk_image": "chr-7.15.3.img"
             }
         },
         {
-            "name": "6.49rc2",
+            "name": "7.14.3",
             "images": {
-                "hda_disk_image": "chr-6.49rc2.img"
+                "hda_disk_image": "chr-7.14.3.img"
             }
         },
         {
-            "name": "6.49.1",
+            "name": "6.49.17",
             "images": {
-                "hda_disk_image": "chr-6.49.1.img"
+                "hda_disk_image": "chr-6.49.17.img"
             }
         },
         {
-            "name": "6.48.5",
+            "name": "6.49.13",
             "images": {
-                "hda_disk_image": "chr-6.48.5.img"
+                "hda_disk_image": "chr-6.49.13.img"
             }
         }
     ]

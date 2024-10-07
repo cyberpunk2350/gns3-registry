@@ -7,7 +7,7 @@
     "vendor_url": "http://openvswitch.org/",
     "documentation_url": "http://openvswitch.org/support/",
     "product_name": "Open vSwitch",
-    "registry_version": 3,
+    "registry_version": 4,
     "status": "stable",
     "maintainer": "GNS3 Team",
     "maintainer_email": "developers@gns3.net",
@@ -16,6 +16,6 @@
     "docker": {
         "adapters": 16,
         "image": "gns3/openvswitch:latest",
-        "environment": "MANAGEMENT_INTERFACE=1"
+        "environment": "MANAGEMENT_INTERFACE=eth0"
     }
 }

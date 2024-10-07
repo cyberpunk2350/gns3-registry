@@ -6,11 +6,11 @@
     "vendor_name": "Debian",
     "vendor_url": "https://www.debian.org",
     "product_name": "Debian",
-    "registry_version": 3,
+    "registry_version": 4,
     "status": "experimental",
-    "maintainer": "GNS3 Team",
-    "maintainer_email": "developers@gns3.net",
-    "usage": "Username:\tdebian\nPassword:\tdebian\nTo become root, use \"sudo -s\".\n\nNetwork configuration:\n- In \"/etc/network/interfaces\" comment out \"source-directory /run/network/interfaces.d\"\n- Remove \"/etc/network/interfaces.d/50-cloud-init\"\n- Create \"/etc/network/interfaces.d/10-ens4\", for example:\n\nauto ens4\n#iface ens4 inet dhcp\niface ens4 inet static\n    address 10.1.1.100/24\n    gateway 10.1.1.1\n    dns-nameservers 10.1.1.1\n",
+    "maintainer": "Bernhard Ehlers",
+    "maintainer_email": "dev-ehlers@mailbox.org",
+    "usage": "Username:\tdebian\nPassword:\tdebian\nTo become root, use \"sudo -s\".\n",
     "symbol": "linux_guest.svg",
     "port_name_format": "ens{port4}",
     "qemu": {
@@ -24,42 +24,61 @@
     },
     "images": [
         {
-            "filename": "debian-11-genericcloud-amd64-20220328-962.qcow2",
-            "version": "11.3",
-            "md5sum": "7cf51e23747898485971a656ac2eb96d",
-            "filesize": 253296640,
-            "download_url": "https://cloud.debian.org/images/cloud/bullseye/",
-            "direct_download_url": "https://cloud.debian.org/images/cloud/bullseye/20220328-962/debian-11-genericcloud-amd64-20220328-962.qcow2"
+            "filename": "debian-12.6.qcow2",
+            "version": "12.6",
+            "md5sum": "04753ba14295c6414d49bffe27b676ae",
+            "filesize": 280907776,
+            "download_url": "https://sourceforge.net/projects/gns-3/files/Qemu%20Appliances/",
+            "direct_download_url": "https://downloads.sourceforge.net/project/gns-3/Qemu%20Appliances/debian-12.6.qcow2"
         },
         {
-            "filename": "debian-10-genericcloud-amd64-20220328-962.qcow2",
-            "version": "10.12",
-            "md5sum": "e92dfa1fc779fff807856f6ea6876e42",
-            "filesize": 232980480,
-            "download_url": "https://cloud.debian.org/images/cloud/buster/",
-            "direct_download_url": "https://cloud.debian.org/images/cloud/buster/20220328-962/debian-10-genericcloud-amd64-20220328-962.qcow2"
+            "filename": "debian-12.4.qcow2",
+            "version": "12.4",
+            "md5sum": "adcf7fdc25e10b3d2d9e2ef91168bffd",
+            "filesize": 286179840,
+            "download_url": "https://sourceforge.net/projects/gns-3/files/Qemu%20Appliances/",
+            "direct_download_url": "https://downloads.sourceforge.net/project/gns-3/Qemu%20Appliances/debian-12.4.qcow2"
         },
         {
-            "filename": "debian-cloud-init-data.iso",
-            "version": "1.0",
-            "md5sum": "43f6bf70c178a9d3c270b5c24971e578",
-            "filesize": 374784,
-            "download_url": "https://github.com/GNS3/gns3-registry/raw/master/cloud-init/Debian/debian-cloud-init-data.iso"
+            "filename": "debian-11.10.qcow2",
+            "version": "11.10",
+            "md5sum": "99a1dc8e110d641309674e69b630e732",
+            "filesize": 263520256,
+            "download_url": "https://sourceforge.net/projects/gns-3/files/Qemu%20Appliances/",
+            "direct_download_url": "https://downloads.sourceforge.net/project/gns-3/Qemu%20Appliances/debian-11.10.qcow2"
+        },
+        {
+            "filename": "debian-11.8.qcow2",
+            "version": "11.8",
+            "md5sum": "95bf44716c7fa1a1da290fd3c98591f2",
+            "filesize": 264933376,
+            "download_url": "https://sourceforge.net/projects/gns-3/files/Qemu%20Appliances/",
+            "direct_download_url": "https://downloads.sourceforge.net/project/gns-3/Qemu%20Appliances/debian-11.8.qcow2"
         }
     ],
     "versions": [
         {
-            "name": "11.3",
+            "name": "12.6",
             "images": {
-                "hda_disk_image": "debian-11-genericcloud-amd64-20220328-962.qcow2",
-                "cdrom_image": "debian-cloud-init-data.iso"
+                "hda_disk_image": "debian-12.6.qcow2"
             }
         },
         {
-            "name": "10.12",
+            "name": "12.4",
             "images": {
-                "hda_disk_image": "debian-10-genericcloud-amd64-20220328-962.qcow2",
-                "cdrom_image": "debian-cloud-init-data.iso"
+                "hda_disk_image": "debian-12.4.qcow2"
+            }
+        },
+        {
+            "name": "11.10",
+            "images": {
+                "hda_disk_image": "debian-11.10.qcow2"
+            }
+        },
+        {
+            "name": "11.8",
+            "images": {
+                "hda_disk_image": "debian-11.8.qcow2"
             }
         }
     ]

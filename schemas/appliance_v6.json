@@ -47,6 +47,11 @@
       "format": "uri",
       "title": "Website of the vendor"
     },
+    "vendor_logo_url": {
+      "type": "string",
+      "format": "uri",
+      "title": "Link to the vendor logo (used by the GNS3 marketplace)"
+    },
     "documentation_url": {
       "type": "string",
       "format": "uri",
@@ -128,7 +133,7 @@
                 "title": "One KEY=VAR environment by line"
             },
             "console_type": {
-              "enum": ["telnet", "vnc", "http", "https"],
+              "enum": ["telnet", "vnc", "http", "https", "none"],
               "title": "Type of console connection for the administration of the appliance"
             },
             "console_http_port": {
@@ -244,6 +249,7 @@
               "i82559er",
               "i82562",
               "i82801",
+              "igb",
               "ne2k_pci",
               "pcnet",
               "rtl8139",
@@ -290,6 +296,7 @@
                             "i82559er",
                             "i82562",
                             "i82801",
+                            "igb",
                             "ne2k_pci",
                             "pcnet",
                             "rtl8139",
@@ -337,7 +344,7 @@
           "title": "Architecture emulated"
         },
         "console_type": {
-          "enum": ["telnet", "vnc", "spice"],
+          "enum": ["telnet", "vnc", "spice", "spice+agent", "none"],
           "title": "Type of console connection for the administration of the appliance"
         },
         "boot_priority": {
@@ -361,6 +368,10 @@
             "minimum": 0,
             "maximum": 100,
             "title": "Throttle the CPU"
+        },
+        "on_close": {
+          "title": "Action to execute on the VM is closed",
+          "enum": ["power_off", "shutdown_signal", "save_vm_state"]
         },
         "process_priority": {
             "title": "Process priority for QEMU",
@@ -400,7 +411,6 @@
           "md5sum": {
             "type": "string",
             "title": "md5sum of the file",
-            "type": "string",
             "pattern": "^[a-f0-9]{32}$"
           },
           "filesize": {
