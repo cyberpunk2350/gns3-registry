@@ -5,9 +5,9 @@
     "description": "IOS XRv supports the control plane features introduced in Cisco IOS XR.",
     "vendor_name": "Cisco",
     "vendor_url": "http://www.cisco.com/",
-    "documentation_url": "http://www.cisco.com/c/en/us/td/docs/ios_xr_sw/ios_xrv/release/notes/xrv-rn.html",
+    "documentation_url": "https://developer.cisco.com/docs/modeling-labs/ios-xrv/",
     "product_name": "IOS XRv",
-    "product_url": "http://virl.cisco.com/",
+    "product_url": "https://developer.cisco.com/modeling-labs/",
     "registry_version": 4,
     "status": "stable",
     "maintainer": "GNS3 Team",
@@ -30,14 +30,14 @@
             "version": "6.1.3",
             "md5sum": "1693b5d22a398587dd0fed2877d8dfac",
             "filesize": 428588544,
-            "download_url": "https://learningnetworkstore.cisco.com/myaccount"
+            "download_url": "https://u.cisco.com/my-learning/my-account"
         },
         {
             "filename": "iosxrv-k9-demo-6.0.1.qcow2",
             "version": "6.0.1",
             "md5sum": "0831ecf43628eccb752ebb275de9a62a",
             "filesize": 908132352,
-            "download_url": "https://learningnetworkstore.cisco.com/myaccount"
+            "download_url": "https://u.cisco.com/my-learning/my-account"
         }
     ],
     "versions": [
